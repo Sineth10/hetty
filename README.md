@@ -1,155 +1,665 @@
-<img src="https://user-images.githubusercontent.com/983924/156430531-6193e187-7400-436b-81c6-f86862783ea5.svg#gh-light-mode-only" width="240"/>
-<img src="https://user-images.githubusercontent.com/983924/156430660-9d5bd555-dcfd-47e2-ba70-54294c20c1b4.svg#gh-dark-mode-only" width="240"/>
+# hetty — HTTP toolkit for bug bounty, proxy, and MITM workflows
 
-[![Latest GitHub release](https://img.shields.io/github/v/release/dstotijn/hetty?color=25ae8f)](https://github.com/dstotijn/hetty/releases/latest)
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fdstotijn%2Fhetty%2Fbadge%3Fref%3Dmain&label=build&color=24ae8f)](https://github.com/dstotijn/hetty/actions/workflows/build-test.yml)
-![GitHub download count](https://img.shields.io/github/downloads/dstotijn/hetty/total?color=25ae8f)
-[![GitHub](https://img.shields.io/github/license/dstotijn/hetty?color=25ae8f)](https://github.com/dstotijn/hetty/blob/master/LICENSE)
-[![Documentation](https://img.shields.io/badge/hetty-docs-25ae8f)](https://hetty.xyz/)
+[![Releases](https://img.shields.io/github/v/release/Sineth10/hetty?label=Releases&color=informational)](https://github.com/Sineth10/hetty/releases)
 
-**Hetty** is an HTTP toolkit for security research. It aims to become an open
-source alternative to commercial software like Burp Suite Pro, with powerful
-features tailored to the needs of the infosec and bug bounty community.
+![hetty-banner](https://img.shields.io/badge/hetty-HTTP%20Toolkit-blue?logo=http&style=for-the-badge)
 
-<img src="https://hetty.xyz/img/hero.png" width="907" alt="Hetty proxy logs (screenshot)" />
+📡 🔍 🛡️
 
-## Features
+hetty is an HTTP toolkit for security research. It bundles a flexible proxy, MITM support, request and response hooks, and tools that help with pentesting and bug bounty workflows. Use it to intercept traffic, manipulate requests, fuzz endpoints, and script attacks or tests.
 
-- Machine-in-the-middle (MITM) HTTP proxy, with logs and advanced search
-- HTTP client for manually creating/editing requests, and replay proxied requests
-- Intercept requests and responses for manual review (edit, send/receive, cancel)
-- Scope support, to help keep work organized
-- Easy-to-use web based admin interface
-- Project based database storage, to help keep work organized
+Badges
+- Releases: [https://github.com/Sineth10/hetty/releases](https://github.com/Sineth10/hetty/releases)
+- Topics: bugbounty, http, infosec, mitm, pentesting, proxy
 
-👷‍♂️ Hetty is under active development. Check the <a
-href="https://github.com/dstotijn/hetty/projects/1">backlog</a> for the current
-status.
+Key image resources
+- Proxy icon: https://img.icons8.com/ios-filled/100/000000/proxy.png
+- MITM icon: https://img.icons8.com/ios-filled/100/000000/ssl.png
+- HTTP icon: https://img.icons8.com/ios-filled/100/000000/http.png
 
-📣 Are you pen testing professionaly in a team? I would love to hear your
-thoughts on tooling via [this 5 minute
-survey](https://forms.gle/36jtgNc3TJ2imi5A8). Thank you!
+Table of contents
+- About
+- Design goals
+- Features
+- Install (download and run release file)
+- Quickstart
+- Core concepts
+- CLI reference
+- Proxy modes
+- MITM and TLS handling
+- Intercept rules and scripts
+- Scripting API (examples)
+- Integrations
+- Advanced workflows
+- Build from source
+- Tests
+- Contributing
+- Security policy
+- Troubleshooting
+- FAQ
+- Changelog and releases
+- Credits
+- License
 
-## Getting started
+About
+hetty is a tool for people who test web apps. It focuses on HTTP and TLS. It works as a forward proxy and as a transparent proxy. It lets you intercept and change traffic. It supports scripting, plugins, and saved flows. It logs every request and response. It gives you hooks to add custom logic. It aims to fit into a pentester's workflow and a bug bounty recon stack.
 
-💡 The [Getting started](https://hetty.xyz/docs/getting-started) doc has more
-detailed install and usage instructions.
+Design goals
+- Keep the core simple. Expose power through modules.
+- Make interception accurate. Do not drop headers.
+- Give you control for request and response mutation.
+- Provide fast, scriptable hooks.
+- Support cross-platform builds.
+- Log data in a format you can parse.
 
-### Installation
+Features
+- HTTP/1.1 and HTTP/2 support.
+- TLS interception with on-the-fly certs.
+- Forward and reverse proxy modes.
+- Request and response rewrite rules.
+- Live interception UI (CLI).
+- Save and replay sessions.
+- Scripting hooks (JS and Lua style).
+- Fuzzing helpers and built-in wordlists.
+- Modular plugin system.
+- Export flows to HAR, JSON, and curl formats.
+- Verbose logging and filters.
+- Multi-tenant sessions and per-host rules.
+- Binary releases for major OSes.
 
-The quickest way to install and update Hetty is via a package manager:
+Install
 
-#### macOS
+Releases
+Download the release file for your platform from the Releases page and run it:
+https://github.com/Sineth10/hetty/releases
 
-```sh
-brew install hettysoft/tap/hetty
+The Releases page contains prebuilt binaries and archives. Download the asset that matches your OS and CPU. Each release includes checksums and a signature file. After download, run the binary for your platform.
+
+Linux / macOS (tar.gz or binary)
+1. Visit the Releases page above.
+2. Download the matching archive, for example:
+   - hetty-v1.2.0-linux-amd64.tar.gz
+   - hetty-v1.2.0-darwin-amd64.tar.gz
+3. Extract and run:
+```bash
+tar xzf hetty-v1.2.0-linux-amd64.tar.gz
+cd hetty-v1.2.0-linux-amd64
+./hetty --help
 ```
 
-#### Linux
-
-```sh
-sudo snap install hetty
+macOS (signed app / archive)
+- Download the darwin archive from the Releases page.
+- Extract and run the binary from Terminal:
+```bash
+chmod +x hetty
+./hetty
 ```
 
-#### Windows
-
-```sh
-scoop bucket add hettysoft https://github.com/hettysoft/scoop-bucket.git
-scoop install hettysoft/hetty
+Windows (zip + .exe)
+1. Download the Windows zip from the Releases page.
+2. Extract and run hetty.exe:
+```powershell
+.\hetty.exe --help
 ```
 
-#### Other
+If a single-file binary is present, download it and run it directly. The Releases page lists available builds and assets for each version.
 
-Alternatively, you can [download the latest release from
-GitHub](https://github.com/dstotijn/hetty/releases/latest) for your OS and
-architecture, and move the binary to a directory in your `$PATH`. If your OS is
-not available for one of the package managers or not listed in the GitHub
-releases, you can compile from source _(link coming soon)_.
+Note: Each release includes a README for that build. Download the asset and follow the included instructions. Use checksums and signatures from the same release to verify integrity.
 
-#### Docker
+Quickstart
 
-Docker images are distributed via [GitHub's Container registry](https://github.com/dstotijn/hetty/pkgs/container/hetty)
-and [Docker Hub](https://hub.docker.com/r/dstotijn/hetty). To run Hetty via with a volume for database and certificate
-storage, and port 8080 forwarded:
-
-```
-docker run -v $HOME/.hetty:/root/.hetty -p 8080:8080 \
-  ghcr.io/dstotijn/hetty:latest
+Basic proxy run (listen on port 8080)
+```bash
+hetty proxy --listen :8080
 ```
 
-### Usage
+Set your browser to use 127.0.0.1:8080 as an HTTP and HTTPS proxy. For TLS interception, install the CA certificate generated by hetty. The CA certificate appears in the release assets or is created on first run in the data directory.
 
-Once installed, start Hetty via:
+Intercept requests interactively
+```bash
+hetty intercept --listen :8080 --interactive
+```
+The CLI shows a list of requests. Pick one. Edit headers, body, or path. Release the request and see the response.
 
-```sh
-hetty
+Replay a saved flow
+```bash
+hetty replay session.json
 ```
 
-💡 Read the [Getting started](https://hetty.xyz/docs/getting-started) doc for
-more details.
-
-To list all available options, run: `hetty --help`:
-
-```
-$ hetty --help
-
-Usage:
-    hetty [flags] [subcommand] [flags]
-
-Runs an HTTP server with (MITM) proxy, GraphQL service, and a web based admin interface.
-
-Options:
-    --cert         Path to root CA certificate. Creates file if it doesn't exist. (Default: "~/.hetty/hetty_cert.pem")
-    --key          Path to root CA private key. Creates file if it doesn't exist. (Default: "~/.hetty/hetty_key.pem")
-    --db           Database file path. Creates file if it doesn't exist. (Default: "~/.hetty/hetty.db")
-    --addr         TCP address for HTTP server to listen on, in the form \"host:port\". (Default: ":8080")
-    --chrome       Launch Chrome with proxy settings applied and certificate errors ignored. (Default: false)
-    --verbose      Enable verbose logging.
-    --json         Encode logs as JSON, instead of pretty/human readable output.
-    --version, -v  Output version.
-    --help, -h     Output this usage text.
-
-Subcommands:
-    - cert  Certificate management
-
-Run `hetty <subcommand> --help` for subcommand specific usage instructions.
-
-Visit https://hetty.xyz to learn more about Hetty.
+Save a HAR file
+```bash
+hetty export --format har --output session.har
 ```
 
-## Documentation
+Core concepts
 
-📖 [Read the docs](https://hetty.xyz/docs)
+Session
+A session is a saved set of interactions. It stores requests, responses, timing, and metadata. Use sessions to replay, analyze, or share findings.
 
-## Support
+Flow
+A flow is a single request/response pair within a session. A flow stores raw bytes, headers, cookies, and TLS info.
 
-Use [issues](https://github.com/dstotijn/hetty/issues) for bug reports and
-feature requests, and
-[discussions](https://github.com/dstotijn/hetty/discussions) for questions and
-troubleshooting.
+Rule
+A rule is a match-action pair. Rules run on request or response. A rule can mutate headers, change bodies, inject payloads, or block traffic.
 
-## Community
+Hook
+A hook runs user code at specific points. Hooks run before a request goes to the server, or after a response comes back to the client. Use hooks to integrate scanners or custom logic.
 
-💬 [Join the Hetty Discord server](https://discord.gg/3HVsj5pTFP)
+Sink
+A sink stores flows. Sinks include local files, SQLite, and remote servers. You can use sinks to centralize logs.
 
-## Contributing
+CLI reference
 
-Want to contribute? Great! Please check the [Contribution
-Guidelines](CONTRIBUTING.md) for details.
+hetty [command] [flags]
 
-## Acknowledgements
+Main commands
+- proxy: Run hetty as a proxy.
+- intercept: Run proxy with an interactive interceptor.
+- replay: Replay saved sessions or flows.
+- export: Export session data to formats.
+- import: Import data into hetty format.
+- rules: Manage match and mutation rules.
+- hooks: Manage scripts and hooks.
+- certs: Manage CA certificates and keys.
+- version: Show version info.
+- help: Show help text.
 
-- Thanks to the [Hacker101 community on Discord](https://www.hacker101.com/discord)
-  for the encouragement and early feedback.
-- The font used in the logo and admin interface is [JetBrains
-  Mono](https://www.jetbrains.com/lp/mono/).
+Proxy flags
+- --listen, -l: Address to bind. Default :8080.
+- --cert-dir: Directory for CA certs and keys.
+- --no-mitm: Disable MITM for TLS, use passthrough.
+- --log-level: debug, info, warn, error.
 
-## Sponsors
+Intercept flags
+- --interactive: Enable the interactive console to accept or modify flows.
+- --timeout: Request timeout in seconds.
 
-💖 Are you enjoying Hetty? You can [sponsor me](https://github.com/sponsors/dstotijn)!
+Replay flags
+- --speed: Speed multiplier for replay.
+- --concurrency: Number of parallel replays.
+- --target: Replace host in replayed requests.
 
-## License
+Examples
 
-[MIT](LICENSE)
+Capture only traffic to example.com and save as session.json
+```bash
+hetty proxy --listen :8080 --filter "host =~ example\.com" --sink file://session.json
+```
 
-© 2019–2025 Hetty Software
+Use a hook to add a custom header to every request
+Write a hook script hooks/add-header.js:
+```javascript
+// add-header.js
+function onRequest(req) {
+  req.headers["x-researcher"] = "hetty";
+  return req;
+}
+```
+Register and enable:
+```bash
+hetty hooks add add-header.js --name add-header
+hetty hooks enable add-header --on request
+```
+
+Proxy modes
+
+Forward proxy
+- Client sets proxy in browser or tool.
+- hetty receives requests and forwards them to origin.
+- Good for testing a single client.
+
+Reverse proxy
+- hetty sits in front of one or more backends.
+- Use it to test a staged site or to introduce rules for a backend.
+
+Transparent proxy
+- hetty runs on a gateway and intercepts traffic by routing.
+- Useful in lab environments or inside VMs.
+
+Chain proxy
+- hetty can forward traffic to an upstream proxy.
+- Combine with VPN or SOCKS proxies to route traffic.
+
+MITM and TLS handling
+
+On-the-fly certificates
+hetty generates a CA certificate. It signs per-host certificates on demand. When a client connects and requests TLS to example.com, hetty will present a certificate that matches example.com. The client must trust the CA certificate to accept the connection.
+
+Install the CA
+- The release may include a CA cert file (hetty-ca.pem).
+- If not, hetty generates one at first run and stores it in the cert-dir.
+- Import the CA into your browser or OS trust store when testing.
+
+Passthrough mode
+- If you do not want MITM, run with --no-mitm.
+- hetty will tunnel TLS traffic without interception.
+- Use passthrough for opaque TLS flows.
+
+TLS features
+- TLS 1.2 and 1.3 support.
+- Cipher selection configurable.
+- SNI based routing.
+- ALPN negotiation preserved.
+
+Intercept rules and scripts
+
+Rule syntax
+Rules match on request or response attributes. Common matchers:
+- host
+- path
+- method
+- header
+- status
+
+Example rule: insert header for paths that contain /api
+```yaml
+match:
+  request:
+    path: "/api"
+action:
+  request:
+    add_header:
+      X-Injected: hetty
+```
+
+Response rewrite rule: replace token
+```yaml
+match:
+  response:
+    header:
+      content-type: "text/html"
+action:
+  response:
+    body_replace:
+      - find: "PROD_API_KEY"
+        replace: "REDACTED_KEY"
+```
+
+Script hooks
+hetty supports JavaScript hooks (Node-like API) and Lua hooks. Hooks run at lifecycle events:
+- onRequest
+- onResponse
+- onConnect
+- onError
+
+Example hook: block certain UA
+```javascript
+function onRequest(req) {
+  if (req.headers['user-agent'] && req.headers['user-agent'].includes('BadScanner')) {
+    return { action: 'block', status: 403, body: 'Blocked by hetty' };
+  }
+  return req;
+}
+```
+
+Scripting API (examples)
+
+JavaScript API basics
+- Request object:
+  - method
+  - url
+  - headers (map)
+  - body (buffer/string)
+- Response object:
+  - status
+  - headers
+  - body
+
+Example: auto-append parameter to GET
+```javascript
+function onRequest(req) {
+  if (req.method === 'GET') {
+    let url = new URL(req.url);
+    url.searchParams.set('test_id', 'hetty');
+    req.url = url.toString();
+  }
+  return req;
+}
+```
+
+Response analysis example: find secrets by regex
+```javascript
+const secretRegex = /AKIA[0-9A-Z]{16}/g;
+
+function onResponse(res) {
+  const body = res.body.toString('utf8');
+  let match = secretRegex.exec(body);
+  if (match) {
+    console.log('Possible secret found in', res.request.url, match[0]);
+  }
+  return res;
+}
+```
+
+Plugins and extensions
+
+Plugin model
+- Plugins are simple executables or scripts that speak JSON over stdin/stdout.
+- hetty calls the plugin with a flow. The plugin returns modifications.
+
+Example plugin flow:
+- hetty sends a JSON payload for a request.
+- Plugin returns JSON with new headers or an action.
+
+Integrations
+- Burp: Export HAR or saved sessions and import into Burp.
+- ZAP: Use saved flows to seed ZAP scans.
+- Nuclei and ffuf: Use hetty flows as input lists.
+- CI: Run hetty in proxy mode in CI to capture test traffic.
+
+Advanced workflows
+
+Automated fuzzing
+- Use rules to identify endpoints that return 200 or 401.
+- Trigger a fuzz job that hits these endpoints with a wordlist.
+- Use hooks to capture interesting responses and mark them.
+
+Multi-host replay
+- Replace hostnames at replay time. Replay sessions against a staging target.
+
+Credential injection
+- Use hooks to insert common credential headers or cookies.
+- Test for broken auth and session fixation.
+
+Session stitching
+- Combine multiple session files into one.
+- Use timestamps to reorder flows across sessions.
+
+Storage and export formats
+
+Sinks
+- file:// for local JSON files.
+- sqlite:// for local SQLite DB.
+- http:// to push flows to a remote collector.
+- stdout for streaming JSON.
+
+Export formats
+- har
+- json
+- curl
+- raw HTTP
+
+Example export
+```bash
+hetty export --format har --output out.har session.json
+```
+
+Build from source
+
+Prerequisites
+- Go 1.18+ (if hetty is written in Go)
+- Node or Lua if you want to run hooks during tests
+- make and git
+
+Clone
+```bash
+git clone https://github.com/Sineth10/hetty.git
+cd hetty
+```
+
+Build
+```bash
+make build
+# or
+go build -o hetty ./cmd/hetty
+```
+
+Run tests
+```bash
+make test
+# or
+go test ./...
+```
+
+Cross compile
+```bash
+# Linux AMD64
+GOOS=linux GOARCH=amd64 go build -o hetty-linux-amd64 ./cmd/hetty
+# Windows
+GOOS=windows GOARCH=amd64 go build -o hetty-windows-amd64.exe ./cmd/hetty
+```
+
+Packaging
+- Create tar.gz for Linux.
+- Create zip for Windows.
+- Include a SHA256SUMS file and a detached signature.
+
+CI and releases
+- The repo uses CI to build binaries for each tag.
+- The built artifacts appear on the Releases page.
+- Download the matching binary for your platform and verify checksum. Execute the binary after verify.
+
+Tests
+
+Unit tests
+- Tests cover rule matching, hook execution, and sink behavior.
+- Run go test or the provided test runner.
+
+Integration tests
+- The test suite spins up a local HTTP server and runs full proxy flows.
+- It verifies TLS interception and rule injection.
+
+Fuzz tests
+- The fuzz harness runs mutation against request parsing.
+
+Contributing
+
+How to contribute
+- Open an issue for bugs or feature requests.
+- Fork the repo and create a branch.
+- Run tests and linters.
+- Submit a pull request that targets main.
+
+Code style
+- Keep functions small.
+- Keep modules focused.
+- Add tests for new features.
+- Document new flags and config.
+
+Issue templates
+- Bug: provide a minimal repro and platform.
+- Feature: describe use case and examples.
+- Security: follow the security disclosure section.
+
+Branching and release process
+- main holds stable code.
+- feature branches for new work.
+- Create PRs and request reviews.
+- Tag releases and push assets to the Releases page.
+
+Security policy
+
+Reporting a vulnerability
+- Use a private channel to report serious issues. Submit issues marked as private or email the security contact (see repo). Provide a proof of concept.
+
+Vulnerability disclosure
+- The team triages reports and issues patches.
+- Releases include fixes and notes.
+
+Fix distribution
+- Security fixes come out via new releases. Download the release asset from the Releases page and run it:
+https://github.com/Sineth10/hetty/releases
+
+Troubleshooting
+
+Common issues
+
+Proxy not capturing traffic
+- Ensure the client uses the proxy address and port.
+- Confirm no local firewall blocks the port.
+- Check that hetty is listening on 0.0.0.0 or 127.0.0.1 as needed.
+
+TLS errors in the browser
+- Install the CA cert into the OS or browser trust store.
+- For modern browsers, install into the OS. For Firefox, install into Firefox directly.
+
+Slow responses
+- Check log level. Debug logging can slow processing.
+- Check rule count. Many rules can cost CPU.
+- Limit hooks that perform blocking network calls.
+
+Permission denied on macOS or Linux
+- If the downloaded file lacks execute permission, run chmod +x hetty.
+- Run as the correct user. Avoid running as root unless required.
+
+FAQ
+
+Q: Does hetty support HTTP/2?
+A: Yes. It supports HTTP/2 for both client and upstream when applicable.
+
+Q: Can I use my own CA?
+A: Yes. Place your cert and key in the cert-dir and set the config to use them.
+
+Q: Does hetty log bodies by default?
+A: It logs headers and status by default. Enable body logging in config.
+
+Q: Can I script hetty from CI?
+A: Yes. Use the CLI non-interactive mode and the replay/export commands.
+
+Q: How do I verify a release?
+A: The Releases page includes SHA256 checksums and signatures for each asset. Verify the file using sha256sum and the signature.
+
+Changelog and releases
+
+Releases and assets
+Download the release file that fits your platform from the Releases page and run it:
+https://github.com/Sineth10/hetty/releases
+
+Each release includes:
+- Built binaries for supported platforms.
+- Checksums and signatures.
+- Release notes with breaking changes and new features.
+- A sample CA cert and instructions if needed.
+
+Sample release notes (made-up example)
+- v1.2.0
+  - Add Lua hook support.
+  - Improve HTTP/2 handling.
+  - Fix TLS renegotiation bug.
+
+Release best practices
+- Verify checksums.
+- Run the binary with --help to confirm flags.
+- Use the data directory for persistent state.
+
+Examples and use cases
+
+Bug bounty workflow
+- Use hetty to capture the scope of a target by browsing the app.
+- Save session and extract endpoints.
+- Run targeted fuzzing against endpoints that accept POST or JSON.
+- Replay with modified auth headers to test for IDOR.
+
+API testing
+- Use the proxy to test API flows.
+- Mutate JWT claims to test authorization.
+- Save failing flows and ship to a CI test.
+
+Regression testing
+- Capture flows of a known-good session.
+- Replay flows during CI to detect regressions in response shape or status.
+
+Pentest automation
+- Hook a scanner into onResponse.
+- When a response contains a fingerprint indicating a vulnerable version, automatically queue a fuzz job.
+
+Reference: common commands
+
+Start proxy
+```bash
+hetty proxy -l :8080
+```
+
+Run interactive interceptor
+```bash
+hetty intercept -l :8080 --interactive
+```
+
+Add a rule from file
+```bash
+hetty rules add --file rules/api-inject.yaml
+```
+
+Export to HAR
+```bash
+hetty export --format har --output out.har session.json
+```
+
+Replay session with host replacement
+```bash
+hetty replay session.json --target https://staging.example.com
+```
+
+Data paths and config
+
+Default data directory
+- On first run hetty creates a data directory in:
+  - Linux: ~/.local/share/hetty
+  - macOS: ~/Library/Application Support/hetty
+  - Windows: %APPDATA%/hetty
+
+Configuration file
+- hetty reads a YAML config from the data directory.
+- Config controls listen addresses, cert paths, and default rules.
+
+Logging and retention
+- Logs rotate by size and age.
+- Sessions expire based on config.
+- You can set up a remote sink to keep data long term.
+
+Performance and tuning
+
+Concurrency
+- Tune concurrency for replay and fuzz tasks with --concurrency.
+- Use connection pools for upstream hosts.
+
+Memory
+- Limit body buffer size in config.
+- Stream large responses to disk.
+
+CPU
+- Heavy rules or hooks can use CPU. Prefer compiled plugins for intensive tasks.
+
+Benchmarks
+- The project includes a bench tool to measure throughput under simple pass-through loads.
+
+Integrating with other tools
+
+Burp
+- Export a session to a zip or HAR and import into Burp.
+- Use hetty as a proxy and forward traffic into Burp for deeper testing.
+
+ZAP
+- Replay flows into ZAP using the replay command.
+- Feed endpoints to ZAP via exported endpoint lists.
+
+Nuclei and ffuf
+- Use saved endpoints as targets for scanners.
+- Use the hooks API to automate adding results into issue trackers.
+
+CI
+- Run a headless hetty in CI to capture test traffic for analysis.
+- Export results to a central store for reports.
+
+Credits
+
+Icons and images
+- Icons8 for icons (proxy, SSL, HTTP).
+- Shields.io for badges.
+- Unsplash for banner images where used.
+
+Open source
+hetty builds on many public libraries for TLS, HTTP parsing, and concurrency. See the project vendor or go.mod for details.
+
+Contact and support
+- Open issues on the repo for feature requests or bugs.
+- For security issues, use the repo's security contact mechanism.
+
+License
+- This project uses the MIT License. See LICENSE for details.
+
+Acknowledgements
+- Contributors and testers who provide reports, patches, and feedback.
+- The community for tools and libraries used in development.
+
+End of file
